@@ -369,7 +369,9 @@ def submit():
     )
 
 
-
+import os
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 5000))  # Render が指定するポートを取得、なければ 5000 を使用
+    app.run(host="0.0.0.0", port=port)        # 0.0.0.0 で外部からアクセス可能にする
+
