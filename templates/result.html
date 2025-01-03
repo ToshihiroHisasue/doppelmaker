@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppelmaker: Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .container {
+        text-align: center;
+        padding: 30px;
+        border-radius: 10px;
+        background-color: #34495e;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 800px;
+        width: 90%;
+      }
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #1abc9c;
+      }
+      #chart-container {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto 30px;
+      }
+      .category-scores {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .category {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 15px;
+        background-color: #2c3e50;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .score {
+        font-size: 36px;
+        font-weight: bold;
+        color: #1abc9c;
+        min-width: 80px;
+        text-align: center;
+      }
+      .description {
+        flex: 1;
+        text-align: left;
+      }
+      .description strong {
+        font-size: 18px;
+        color: #ecf0f1;
+      }
+      .description p {
+        font-size: 14px;
+        margin: 5px 0 0;
+        color: #bdc3c7;
+      }
+      .subcategories {
+        list-style: none;
+        margin-top: 10px;
+        padding: 0;
+        color: #bdc3c7;
+        font-size: 14px;
+      }
+      .subcategories li {
+        margin-bottom: 5px;
+      }
+      .toggle-subcategories {
+        display: block;
+        margin-top: 10px;
+        color: #1abc9c;
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 14px;
+      }
+      
+      
+      .back-button {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 12px 24px;
+        background-color: #1abc9c;
+        color: #ecf0f1;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-button:hover {
+        background-color: #16a085;
+        transform: translateY(-3px);
+    }
+
+    .back-button:active {
+        transform: translateY(2px);
+    }
+    .explanation-section {
+      width: 100%;
+    }
+
+    .category-explanation {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .category-card {
+      background-color: #2c3e50;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      color: #ecf0f1;
+    }
+
+    .category-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #1abc9c;
+      cursor: pointer;
+    }
+
+    .category-description {
+      font-size: 14px;
+      line-height: 1.6;
+      display: none; /* 初期状態では非表示 */
+    }
+
+    .category-card:hover {
+      background-color: #34495e;
+    }
+
+    .category-title:hover {
+      text-decoration: underline;
+    }
+
+    </style>
+
+    <style>
+        .category-description ul {
+      list-style-type: none; /* リストマーカーを削除 */
+      padding: 0;
+    }
+  
+    .category-description li {
+      margin-bottom: 15px; /* 各項目の間隔を広げる */
+    }
+  
+    .description-text {
+      display: block; /* 新しい行にする */
+      margin-left: 20px; /* 左にインデントを追加 */
+      font-size: 14px; /* 説明文を少し小さくする */
+      line-height: 1.5; /* 行間を広げて読みやすくする */
+      color: #bdc3c7; /* テキスト色を調整 */
+    }
+  
+    .category-description strong {
+      color: #ecf0f1; /* タイトルの色を強調 */
+    }
+    #score-explanation {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #34495e;
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+}
+
+#score-explanation h3 {
+  color: #1abc9c;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.score-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.score-legend li {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.range-title {
+  font-weight: bold;
+  color: #ecf0f1;
+  min-width: 80px; /* タイトル部分を揃える */
+}
+
+.escription-text {
+  color: #bdc3c7;
+  font-size: 13px;
+}
+
+.legend-note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #bdc3c7;
+  text-align: left;
+}
+
+
+.feedback-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #34495e;
+  border-radius: 10px;
+  color: #ecf0f1;
+  text-align: center;
+}
+
+.feedback-section h2 {
+  font-size: 22px;
+  color: #1abc9c;
+  margin-bottom: 15px;
+}
+
+.feedback-section p {
+  font-size: 16px;
+  color: #bdc3c7;
+  margin-bottom: 20px;
+}
+
+.feedback-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #1abc9c;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.feedback-button:hover {
+  background-color: #16a085;
+}
+
+
+    </style>
+  
+
+  </head>
+
+<body>
+    <div class="container">
+      <h1>Your Results</h1>
+      <div id="chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+      
+      <!-- スコア説明をレーダーチャートの下に追加 -->
+      <div id="score-explanation">
+        <h3>スコアの解釈</h3>
+        <ul class="score-legend">
+          <li><span class="range-title">50未満:</span> <span class="escription-text">低め</span></li>
+          <li><span class="range-title">50:</span> <span class="escription-text">標準的</span></li>
+          <li><span class="range-title">55以上:</span> <span class="escription-text">やや高め</span></li>
+          <li><span class="range-title">60以上:</span> <span class="escription-text">非常に高め</span></li>
+        </ul>
+        <p class="legend-note">※ 総合スコアはサブカテゴリー5要素の合計点 (各10点基準) に基づきます。</p>
+      </div>
+         
+  
+      <div class="category-scores">
+        <div class="category">
+            <span class="score">{{ category_scores['Cognitive'] }}</span>
+            <div class="description">
+                <strong>1. 認知的および知的能力</strong>
+                <p>ハワード・ガードナーの多重知能理論とジャン・ピアジェの認知発達理論に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Cognitive">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Cognitive-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in cognitive_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="category">
+            <span class="score">{{ category_scores['Emotional'] }}</span>
+            <div class="description">
+                <strong>2. 感情的および精神的回復力</strong>
+                <p>ダニエル・ゴールマンの感情知能理論とヴィクトール・フランクルの著作『夜と霧』の概念に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Emotional">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Emotional-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in emotional_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="category">
+            <span class="score">{{ category_scores['Physical'] }}</span>
+            <div class="description">
+                <strong>3. 身体的および生物学的属性</strong>
+                <p>アリストテレスの「エウダイモニア」とヒポクラテスの気質理論に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Physical">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Physical-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in physical_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="category">
+            <span class="score">{{ category_scores['Social'] }}</span>
+            <div class="description">
+                <strong>4. 社会的および対人関係能力</strong>
+                <p>カール・ロジャースの人間中心療法とエーリッヒ・フロムの『愛するということ』に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Social">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Social-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in social_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="category">
+            <span class="score">{{ category_scores['Ethical'] }}</span>
+            <div class="description">
+                <strong>5. 倫理的および哲学的指向</strong>
+                <p>イマヌエル・カントの倫理哲学とマズローの欲求段階説（自己実現段階）に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Ethical">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Ethical-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in ethical_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="category">
+            <span class="score">{{ category_scores['Aesthetic'] }}</span>
+            <div class="description">
+                <strong>6. 美的および創造的表現</strong>
+                <p>フリードリヒ・ニーチェの創造性の概念とジョン・デューイの『経験としての芸術』に基づいています。</p>
+                <a href="#" class="toggle-subcategories" data-category="Aesthetic">サブカテゴリーを見る</a>
+                <ul class="subcategories" id="Aesthetic-subcategories" style="display: none;">
+                    {% for subcategory, score in subcategory_scores.items() if subcategory in aesthetic_subcategories %}
+                    <li><strong>{{ subcategory_translations[subcategory] }}</strong>: {{ score }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+      
+  <script>
+    // Flaskから渡されたスコアを受け取る
+    const categoryScores = {{ category_scores | tojson }};
+    
+    // レーダーチャートを描画する関数
+    function renderRadarChart(scores) {
+      const ctx = document.getElementById('radarChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Cognitive', 'Emotional', 'Physical', 'Social', 'Ethical', 'Aesthetic'],
+          datasets: [{
+            label: 'Your Scores',
+            data: Object.values(scores),
+            fill: true,
+            borderColor: 'rgba(46, 204, 113, 1)',
+            backgroundColor: 'rgba(46, 204, 113, 0.3)',
+            pointBackgroundColor: 'rgba(39, 174, 96, 1)',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 75,
+              grid: {
+                color: 'rgba(236, 240, 241, 0.2)',
+              },
+              ticks: {
+                stepSize: 25,
+                color: '#159948',
+                font: {
+                  size: 12
+                }
+              },
+              angleLines: {
+                color: 'rgba(236, 240, 241, 0.5)'
+              },
+              pointLabels: {
+                color: '#ecf0f1',
+                font: {
+                  size: 14
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // チャート描画
+    renderRadarChart(categoryScores);
+ 
+    document.querySelectorAll('.toggle-subcategories').forEach(link => {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        const category = this.dataset.category;
+        const subcategories = document.getElementById(`${category}-subcategories`);
+        if (subcategories.style.display === 'none') {
+          subcategories.style.display = 'block';
+          this.textContent = 'Hide Subcategories';
+        } else {
+          subcategories.style.display = 'none';
+          this.textContent = 'View Subcategories';
+        }
+      });
+    });
+
+
+  </script>
+
+
+    <div class="container">
+  
+      <!-- 結果の説明を追加 -->
+      <div class="explanation-section">
+        <h2>Detailed Explanations</h2>
+        <div class="category-explanation">
+          <div class="category-card">
+
+
+            
+            <h3 class="category-title">1. 認知的および知的能力</h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>論理的・分析的思考 (Logical-analytical reasoning):</strong><br>
+                    <span class="description-text">この能力は、問題を分解し、合理的で正確な解決策を導き出す力を指します。他の知能要素との関係では、例えば、新しいスキルの学習（適応力）と結びつくことにより、効果的な問題解決が可能となります。</span>
+                  </li>
+                  <li>
+                    <strong>創造性・発散的思考 (Creativity and divergent thinking):</strong><br>
+                    <span class="description-text">創造性は、既存の枠組みにとらわれず、新しい視点やアイデアを生み出す能力です。この能力は、論理的思考とは一見対照的に見えますが、両者は補完的な関係にあり、例えば、論理的に導かれた基盤の上に革新的なアイデアを積み上げることで高い成果を生むことができます。</span>
+                  </li>
+                  <li>
+                    <strong>空間的把握能力 (Spatial intelligence):</strong><br>
+                    <span class="description-text">空間的知能は、位置関係や形状を視覚的に把握する力で、問題解決や創造的活動に深く関与します。この能力は、論理的思考と創造性を実践的に結びつける役割を果たします。</span>
+                  </li>
+                  <li>
+                    <strong>記憶力と情報保持 (Memory and information retention)</strong><br>
+                    <span class="description-text">記憶力は、情報を効率的に蓄積し、それを適切な状況で引き出す能力です。例えば、論理的思考や創造性は、この基盤的能力がなければ適切に機能しません。情報保持は、学習能力の一部として、新しいスキルの習得にも影響します。</span>
+                  </li>
+                  <li>
+                    <strong>新しいスキルへの適応力 (Adaptability in learning new skills):</strong><br>
+                    <span class="description-text">適応力は、急速に変化する環境や新しい課題に対応する柔軟性を指します。これは、他のすべての要素と密接に関連しており、論理的思考による問題の理解、創造的思考による新しいアイデアの活用、空間的知能や記憶力を活かしたスキルの実践が、この適応力を高める要因となります。</span>
+                  </li>
+                </ul>
+              </div>              
+          </div>
+
+
+
+          <div class="category-card">
+            <h3 class="category-title">2. 感情的および精神的回復力</h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>感情のコントロール (Emotional regulation):</strong><br>
+                    <span class="description-text">この能力は、感情を適切に認識し、管理する力を指します。例えば、怒りや悲しみといった感情が湧いた際に、それを適切に制御することで、冷静な判断が可能となります。この能力は、ストレス耐性や回復力といった他の感情的要素と密接に関連しており、感情的な安定は個人の幸福感や社会的成功にも大きく寄与します。</span>
+                  </li>
+                  <li>
+                    <strong>ストレス耐性と回復力 (Stress tolerance and resilience):</strong><br>
+                    <span class="description-text">ストレス耐性は、困難な状況下でも冷静さを保つ力を指し、回復力は困難を乗り越えた後に心の平静を取り戻す能力を示します。この二つの要素は、感情のコントロール能力と相互に作用し、楽観的な視点を維持するための基盤となります。高いストレス耐性と回復力を持つ人は、逆境に立ち向かう力を発揮しやすいです。</span>
+                  </li>
+                  <li>
+                    <strong>楽観性と前向きな姿勢 (Optimism and positivity):</strong><br>
+                    <span class="description-text">楽観性は、将来に対して肯定的な見方を持つ力を指し、困難な状況でも希望を失わずに行動する基盤となります。この能力は、ストレス耐性や回復力と深く関わっており、感情のコントロール能力によって強化されます。前向きな姿勢を持つ人は、社会的な成功や長期的な幸福感を得る可能性が高まります。</span>
+                  </li>
+                  <li>
+                    <strong>共感と視点の共有 (Empathy and perspective-taking):</strong><br>
+                    <span class="description-text">共感は、他者の感情を理解し、その立場に立って考える力を指します。この能力は、人間関係の構築において極めて重要であり、社会的適応力やチームワークとも関連しています。また、視点の共有は、他者の経験を深く理解し、より良いコミュニケーションを可能にするための重要な要素です。</span>
+                  </li>
+                  <li>
+                    <strong>目的意識または人生の意義 (Sense of purpose or life meaning):</strong><br>
+                    <span class="description-text">目的意識は、行動や選択に明確な意味を持たせる力を指し、人生の意義はその人の存在理由や価値観に深く根ざしています。この能力は、楽観性や回復力と相互作用し、個人の持続的な成長を支えます。強い目的意識を持つ人は、挑戦に立ち向かい、困難を克服する際の大きな支えとなります。</span>
+                  </li>
+                </ul>
+              </div>              
+          </div>
+
+
+
+
+          <div class="category-card">
+            <h3 class="category-title">3. 身体的および生物学的属性</h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>体力と持久力 (Physical stamina and endurance):</strong><br>
+                    <span class="description-text">体力と持久力は、長時間にわたる活動を支え、疲労に対する抵抗力を示します。この能力は、筋力や柔軟性と密接に関連しており、健康指標の改善にも寄与します。持久力のある人は、集中力を長時間維持できるため、他の知的・感情的要素との調和が促進されます。</span>
+                  </li>
+                  <li>
+                    <strong>筋力と柔軟性 (Strength and flexibility):</strong><br>
+                    <span class="description-text">筋力は、力強い動作を支える基盤となり、柔軟性はスムーズで効果的な身体の動きを可能にします。この二つの要素は、身体運動知能と相互に関連しており、感覚の鋭敏さを活用することで、より高度な身体的パフォーマンスが可能となります。また、健康指標にも影響を及ぼし、怪我の予防や回復能力の向上に寄与します。</span>
+                  </li>
+                  <li>
+                    <strong>健康指標 (Health metrics):</strong><br>
+                    <span class="description-text">健康指標は、免疫力や体の回復力、内臓機能といった身体全体の健康状態を反映します。この指標は、体力や筋力といった物理的要素の土台となり、感覚の鋭敏さにも影響を与えます。健康状態が良好である人は、日々の活動を効率的に行えるだけでなく、感情的な安定や社会的な適応力にも良い影響を与えます。</span>
+                  </li>
+                  <li>
+                    <strong>感覚の鋭敏さ (Sensory acuity):</strong><br>
+                    <span class="description-text">感覚の鋭敏さは、視覚、聴覚、触覚などの感覚器官を通じて情報を正確に受け取る能力を指します。この能力は、身体運動知能と組み合わさることで、周囲の状況に迅速かつ適切に対応する力を高めます。また、感覚の鋭敏さが高い人は、身体的活動だけでなく、空間的把握能力や創造性にも優れた特徴を示すことが多いです。</span>
+                  </li>
+                  <li>
+                    <strong>身体運動知能 (Kinesthetic intelligence):</strong><br>
+                    <span class="description-text">身体運動知能は、身体を正確にコントロールし、効果的に動かす能力を指します。筋力や柔軟性、感覚の鋭敏さがこの能力を支える重要な要素です。また、この知能は新しい動作の学習や身体の動きの調整において重要であり、スポーツや芸術活動において顕著に発揮されます。</span>
+                  </li>
+                </ul>
+              </div>
+              
+          </div>
+
+
+          
+          <div class="category-card">
+            <h3 class="category-title">4.社会的および対人関係能力 </h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>コミュニケーションスキル (Communication skills):</strong><br>
+                    <span class="description-text">コミュニケーションスキルは、情報や感情を正確かつ効果的に伝える能力を指します。このスキルは、他者との協力や関係構築の基盤となり、リーダーシップの発揮にも寄与します。さらに、社会適応力を高める要因として機能し、異なる背景を持つ人々との調和を促進します。</span>
+                  </li>
+                  <li>
+                    <strong>協力とチームワーク (Collaboration and teamwork):</strong><br>
+                    <span class="description-text">協力とチームワークは、共通の目標に向かって他者と協力する能力を指します。この能力は、コミュニケーションスキルと密接に結びつき、リーダーシップの発揮にも影響を与えます。チームメンバー間の関係構築を支える重要な要素であり、社会適応力の向上にも寄与します。</span>
+                  </li>
+                  <li>
+                    <strong>リーダーシップの傾向 (Leadership tendencies):</strong><br>
+                    <span class="description-text">リーダーシップの傾向は、目標達成に向けて他者を導く力を指します。この能力は、コミュニケーションスキルや協力とチームワークの上に成り立ちます。リーダーシップが発揮される状況では、社会適応力や関係構築のスキルも重要な役割を果たし、他者との信頼関係を強化します。</span>
+                  </li>
+                  <li>
+                    <strong>社会適応力 (Social adaptability):</strong><br>
+                    <span class="description-text">社会適応力は、異なる社会的状況や文化に柔軟に対応する力を指します。この能力は、コミュニケーションスキルや関係構築のスキルと相互に関連しており、協力とチームワークを円滑に進めるための重要な要素となります。高い社会適応力を持つ人は、リーダーシップを発揮する際にもその力を活用できます。</span>
+                  </li>
+                  <li>
+                    <strong>関係構築 (Relationship-building):</strong><br>
+                    <span class="description-text">関係構築は、信頼に基づいた持続的な人間関係を築く力を指します。この能力は、コミュニケーションスキルを土台とし、協力とチームワークの円滑化に寄与します。さらに、社会適応力やリーダーシップの発揮にも関与し、他者との相互理解を深める役割を果たします。</span>
+                  </li>
+                </ul>
+              </div>              
+          </div>
+
+
+
+          <div class="category-card">
+            <h3 class="category-title">5. 倫理的および哲学的指向</h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>道徳的思考と誠実さ (Moral reasoning and integrity):</strong><br>
+                    <span class="description-text">道徳的思考と誠実さは、倫理的な判断を行い、それを基に行動する力を指します。この能力は、自己認識と深く関連しており、自分の価値観を理解することで、誠実な行動が可能になります。また、利他主義や精神性の探求とも相互に関連し、他者との信頼関係を築く際に重要な役割を果たします。</span>
+                  </li>
+                  <li>
+                    <strong>利他主義と寛大さ (Altruism and generosity):</strong><br>
+                    <span class="description-text">利他主義と寛大さは、他者の幸福を優先し、自らの利益を犠牲にしてでも支援する能力を指します。この能力は、道徳的思考や精神性の探求と密接に関連しており、社会全体の調和を促進します。さらに、自己認識によって自分の利他的行動の影響を理解することで、その実践がより効果的になります。</span>
+                  </li>
+                  <li>
+                    <strong>好奇心と新しいアイデアへの開放性 (Curiosity and openness to new ideas):</strong><br>
+                    <span class="description-text">好奇心と新しいアイデアへの開放性は、新しい情報や未知の分野に対して積極的に関心を持つ力を指します。この能力は、精神性の探求と結びつき、個人の成長や新たな視点を得る助けとなります。また、自己認識を通じて、自分の限界や成長の可能性を理解する力を高めます。</span>
+                  </li>
+                  <li>
+                    <strong>自己認識 (Self-awareness):</strong><br>
+                    <span class="description-text">自己認識は、自分の感情、行動、価値観を深く理解する能力を指します。この能力は、道徳的思考や利他主義と結びつき、自分の行動が他者や社会に与える影響を理解する基盤となります。また、精神性の探求や新しいアイデアへの開放性と相互作用し、自分自身の成長を促進します。</span>
+                  </li>
+                  <li>
+                    <strong>精神性または存在の探求 (Spirituality or existential inquiry):</strong><br>
+                    <span class="description-text">精神性または存在の探求は、人生の意味や目的を深く考える力を指します。この能力は、道徳的思考と利他主義に支えられ、自分の価値観や信念に基づいた行動を取るための指針となります。また、自己認識や好奇心との関係を通じて、自己成長や深い人生理解をもたらします。</span>
+                  </li>
+                </ul>
+              </div>              
+          </div>
+
+
+
+
+
+
+
+
+
+          <div class="category-card">
+            <h3 class="category-title">6. 美的および創造的表現</h3>
+            <div class="category-description">
+                <ul>
+                  <li>
+                    <strong>芸術的創造性 (Artistic creativity):</strong><br>
+                    <span class="description-text">芸術的創造性は、視覚芸術、音楽、文学などを通じて新しい作品やアイデアを生み出す能力を指します。この能力は、自己表現の独創性と深く結びついており、自分自身の個性や感情を形にする力を強化します。また、美しさの鑑賞によってインスピレーションを受け、創造的な活動がさらに豊かになります。</span>
+                  </li>
+                  <li>
+                    <strong>美しさの鑑賞 (Appreciation of beauty):</strong><br>
+                    <span class="description-text">美しさの鑑賞は、自然、芸術、デザインなどの美的要素に感動し、それを評価する能力を指します。この能力は、芸術的創造性を促進し、自己表現の独創性を磨く源泉となります。また、物語構築や叙述能力と相互に作用し、感動的で説得力のあるストーリーを創る力を高めます。</span>
+                  </li>
+                  <li>
+                    <strong>自己表現の独創性 (Originality in self-expression):</strong><br>
+                    <span class="description-text">自己表現の独創性は、独自のスタイルや方法で自分を表現する能力を指します。この能力は、芸術的創造性と密接に関連し、個人の感情や思想をクリエイティブな形で具現化します。遊び心とユーモアを取り入れることで、自己表現がさらに親しみやすく、魅力的なものになります。</span>
+                  </li>
+                  <li>
+                    <strong>物語構築と叙述能力 (Storytelling and narrative abilities):</strong><br>
+                    <span class="description-text">物語構築と叙述能力は、説得力があり共感を生むストーリーを作る力を指します。この能力は、美しさの鑑賞や自己表現の独創性と結びつき、芸術的創造性を活用して感情に訴える効果的なストーリーを生み出します。また、遊び心やユーモアを含めることで、ストーリーがより魅力的で親しみやすくなります。</span>
+                  </li>
+                  <li>
+                    <strong>遊び心とユーモア (Playfulness and humor):</strong><br>
+                    <span class="description-text">遊び心とユーモアは、軽やかで楽しい方法で自己表現を行い、他者とつながる能力を指します。この能力は、自己表現の独創性や物語構築と関連し、人々の心を引き付けるための重要な要素となります。また、美しさの鑑賞や芸術的創造性を取り入れることで、ユニークで記憶に残る表現を可能にします。</span>
+                  </li>
+                </ul>
+              </div>
+              
+          </div>
+          <!-- 他のカテゴリも同様に追加 -->
+        </div>
+      </div>
+
+      <!-- フィードバックセクション -->
+    <div class="feedback-section">
+        <h2>フィードバックをお寄せください</h2>
+        <p>以下のリンクから、あなたのご意見や感想をお聞かせください。</p>
+        <a href="https://forms.gle/vBMnTMzj5c2tvyiP9" target="_blank" class="feedback-button">
+          フィードバックフォームを開く
+        </a>
+      </div>
+
+  
+      <!-- 戻るボタン -->
+      <a href="/" class="back-button">Return</a>
+    </div>
+
+
+    <script>
+        // サブカテゴリーの表示・非表示トグル
+        document.querySelectorAll('.category-title').forEach(title => {
+          title.addEventListener('click', () => {
+            const description = title.nextElementSibling;
+            description.style.display = description.style.display === 'block' ? 'none' : 'block';
+          });
+        });
+    </script>
+</body>
+</html>
+
